@@ -17,7 +17,7 @@ const FormDialog = ({ onClose, open, formik }) => {
         }}
       >
         <DialogTitle>
-          <Typography variant="h6">
+          <Typography variant="h5">
             {formik.values.id ? 'Edit post' : 'Create a new post'}
           </Typography>
         </DialogTitle>

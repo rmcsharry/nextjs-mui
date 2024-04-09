@@ -5,6 +5,7 @@ import FormDialog from '@/components/FormDialog'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
 import getAllPosts from '@/services/getAllPosts'
+import DeleteDialog from '@/components/DeleteDialog'
 
 const validationSchema = yup.object({
   title: yup.string().required('Please enter value'),
@@ -12,25 +13,48 @@ const validationSchema = yup.object({
 });
 
 
-const HomePage = ({posts}) => {
+const HomePage = ({ posts }) => {
+  const [allPosts, setAllPost] = useState(posts);
   const [toggleFormDialog, setToggleFormDialog] = useState(false);
+  const [toggleDeleteDialog, setToggleDeleteDialog] = useState(false);
+  const [deletePost, setDeletePost] = useState(null);
+
   const formik = useFormik({
     initialValues: {
       title: '',
       body: ''
     },
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values)
+    onSubmit: async (values, formikHelpers) => {
+      try {
+        console.log(values, formikHelpers)
+        formikHelpers.resetForm();
+        setToggleFormDialog(false);
+      } catch (error) {
+        console.error(error)
+      };
     }
   });
+
+  const handleDelete = async () => {
+    setToggleDeleteDialog(false);
+
+    if (!deletePost) return;
+
+    try {
+      //await deletePostById(deletePost);
+      setAllPost((prev) => prev.filter((post) => post.id !== deletePost));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Box sx={(theme) => ({
       minHeight: '100vh',
       backgroundColor: theme.palette.grey[300]
     })}>
-      <Container maxWidth="md" sx={{ py: 2}}>
+      <Container maxWidth="md" sx={{ py: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={3}>
             <Button
@@ -41,7 +65,11 @@ const HomePage = ({posts}) => {
             </Button>
           </Grid>
           <Grid item xs={12} md={9}>
-            <PostList posts={posts} />
+            <PostList
+              posts={allPosts}
+              setDeletePost={setDeletePost}
+              setToggleDeleteDialog={setToggleDeleteDialog}
+            />
           </Grid>
         </Grid>
       </Container>
@@ -50,6 +78,15 @@ const HomePage = ({posts}) => {
         open={toggleFormDialog}
         onClose={() => setToggleFormDialog(false)}
         formik={formik}
+      />
+
+      <DeleteDialog
+        open={toggleDeleteDialog}
+        onClose={() => {
+          setToggleDeleteDialog(false);
+          formik.resetForm();
+        }}
+        onDeleteHandler={handleDelete}
       />
     </Box>
   )
@@ -61,8 +98,8 @@ export async function getServerSideProps() {
   const posts = await getAllPosts();
 
   return {
-      props: {
-          posts
-      },
+    props: {
+      posts
+    },
   };
 }
