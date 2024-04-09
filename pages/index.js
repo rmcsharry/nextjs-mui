@@ -27,7 +27,8 @@ const HomePage = ({ posts }) => {
     validationSchema,
     onSubmit: async (values, formikHelpers) => {
       try {
-        console.log(values, formikHelpers)
+        console.log(values, formikHelpers);
+        setAllPost((prev) => [{ id: prev.length + 1, ...values }, ...prev]);
         formikHelpers.resetForm();
         setToggleFormDialog(false);
       } catch (error) {
