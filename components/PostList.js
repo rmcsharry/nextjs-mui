@@ -2,7 +2,7 @@ import React from 'react'
 import { Paper, Typography } from '@mui/material'
 import PostListItem from './PostListItem'
 
-const PostList = ({posts, setDeletePost, setToggleDeleteDialog}) => {
+const PostList = ({posts, setDeletePost, setEditPost, formik, setToggleDeleteDialog, setToggleFormDialog}) => {
 
   return (
     <Paper sx={{ width: '100%', height: '80vh', overflow: 'auto' }}>
@@ -14,7 +14,12 @@ const PostList = ({posts, setDeletePost, setToggleDeleteDialog}) => {
             setToggleDeleteDialog(true);
             setDeletePost(post.id);
           }}
-          onEdit={() => {}}
+          onEdit={() => {
+            formik.setFieldValue('title', post.title);
+            formik.setFieldValue('body', post.body);
+            formik.setFieldValue('id', post.id);
+            setToggleFormDialog(true);
+          }}
         />
       )) : (
         <Typography sx={{ p: 2 }}>

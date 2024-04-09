@@ -18,9 +18,11 @@ const HomePage = ({ posts }) => {
   const [toggleFormDialog, setToggleFormDialog] = useState(false);
   const [toggleDeleteDialog, setToggleDeleteDialog] = useState(false);
   const [deletePost, setDeletePost] = useState(null);
+  const [editPost, setEditPost] = useState(null);
 
   const formik = useFormik({
     initialValues: {
+      id: null,
       title: '',
       body: ''
     },
@@ -28,12 +30,19 @@ const HomePage = ({ posts }) => {
     onSubmit: async (values, formikHelpers) => {
       try {
         console.log(values, formikHelpers);
-        setAllPost((prev) => [{ id: prev.length + 1, ...values }, ...prev]);
+        if (values.id) {
+          //await updatePostById(values);
+          setAllPost((prev) => prev.map((post) => post.id === values.id ? values : post));
+        } else {
+          setAllPost((prev) => [{ id: prev.length + 1, ...values }, ...prev]);
+        };
         formikHelpers.resetForm();
         setToggleFormDialog(false);
       } catch (error) {
         console.error(error)
-      };
+      } finally {
+        formikHelpers.setSubmitting(false);
+       };
     }
   });
 
@@ -60,7 +69,9 @@ const HomePage = ({ posts }) => {
           <Grid item xs={12} md={3}>
             <Button
               variant="contained" fullWidth
-              onClick={() => setToggleFormDialog(true)}
+              onClick={() => {
+                setToggleFormDialog(true);
+              }}
             >
               Add Post
             </Button>
@@ -69,7 +80,10 @@ const HomePage = ({ posts }) => {
             <PostList
               posts={allPosts}
               setDeletePost={setDeletePost}
+              setEditPost={setEditPost}
+              formik={formik}
               setToggleDeleteDialog={setToggleDeleteDialog}
+              setToggleFormDialog={setToggleFormDialog}
             />
           </Grid>
         </Grid>
