@@ -1,7 +1,14 @@
-import React from 'react'
-import { Box, Grid, Button, Container } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Grid, Button, Container, Dialog } from '@mui/material'
 import PostList from '@/components/PostList'
+import FormDialog from '@/components/FormDialog'
+import { useFormik } from 'formik'
+import * as yup from 'yup';
 
+const validationSchema = yup.object({
+  title: yup.string().required('Please enter value'),
+  body: yup.string().required('Please enter value'),
+});
 
 const POSTS = [
   {
@@ -25,6 +32,18 @@ const POSTS = [
 ]
 
 const HomePage = () => {
+  const [toggleFormDialog, setToggleFormDialog] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      body: ''
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values)
+    }
+  });
+
   return (
     <Box sx={(theme) => ({
       minHeight: '100vh',
@@ -33,13 +52,19 @@ const HomePage = () => {
       <Container maxWidth="md" sx={{ py: 2}}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={3}>
-            <Button variant="contained" fullWidth>Add Post</Button>
+            <Button variant="contained" fullWidth onClick={() => setToggleFormDialog(true)}>Add Post</Button>
           </Grid>
           <Grid item xs={12} md={9}>
             <PostList posts={POSTS} />
           </Grid>
         </Grid>
       </Container>
+
+      <FormDialog
+        open={toggleFormDialog}
+        onClose={() => setToggleFormDialog(false)}
+        formik={formik}
+      />
     </Box>
   )
 }
