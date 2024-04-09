@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 
 const HomePage = () => {
   return (
-    <Box>
+    <Box sx={{minHeight: '100vh'}}>
       <Typography variant="h1">Home Page</Typography>
     </Box>
   )
