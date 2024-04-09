@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import { AppBar, Box, Typography, List, ListItemButton, Toolbar } from '@mui/material'
+import { AppBar, Typography, List, ListItemButton, Toolbar } from '@mui/material'
+import useScrollTrigger from '@mui/material/useScrollTrigger';
 
 const MENU_ITEMS = [
   { label: 'Home', href: '/' },
@@ -8,20 +9,37 @@ const MENU_ITEMS = [
   { label: 'Contact', href: '/contact' },
 ]
 
-const Navbar = () => {
+function ElevationScroll(props) {
+
+  const { children, window } = props;
+
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+  });
+
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+  });
+
+}
+
+const Navbar = (props) => {
   return (
-    <AppBar position="sticky">
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Typography variant="h2">POST.DEV</Typography>
-        <List>
-          {MENU_ITEMS.map((item) => (
-            <Link href={item.href} key={item.label}>
-              <ListItemButton>{item.label}</ListItemButton>
-            </Link>
-          ))}
-        </List>
-      </Toolbar>
-    </AppBar>
+    <ElevationScroll {...props}>
+      <AppBar position="sticky">
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography variant="h6">POST.DEV</Typography>
+          <List>
+            {MENU_ITEMS.map((item) => (
+              <Link href={item.href} key={item.label}>
+                <ListItemButton>{item.label}</ListItemButton>
+              </Link>
+            ))}
+          </List>
+        </Toolbar>
+      </AppBar>
+    </ElevationScroll>
   )
 }
 
