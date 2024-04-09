@@ -13,12 +13,21 @@ const validationSchema = yup.object({
 });
 
 
+
 const HomePage = ({ posts }) => {
   const [allPosts, setAllPost] = useState(posts);
   const [toggleFormDialog, setToggleFormDialog] = useState(false);
   const [toggleDeleteDialog, setToggleDeleteDialog] = useState(false);
   const [deletePost, setDeletePost] = useState(null);
   const [editPost, setEditPost] = useState(null);
+
+  function generateGUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0,
+          v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -30,11 +39,13 @@ const HomePage = ({ posts }) => {
     onSubmit: async (values, formikHelpers) => {
       try {
         console.log(values, formikHelpers);
+        console.log(allPosts)
         if (values.id) {
           //await updatePostById(values);
           setAllPost((prev) => prev.map((post) => post.id === values.id ? values : post));
         } else {
-          setAllPost((prev) => [{ id: prev.length + 1, ...values }, ...prev]);
+          values.id = generateGUID();
+          setAllPost((prev) => [{ ...values }, ...prev]);
         };
         formikHelpers.resetForm();
         setToggleFormDialog(false);
@@ -91,7 +102,10 @@ const HomePage = ({ posts }) => {
 
       <FormDialog
         open={toggleFormDialog}
-        onClose={() => setToggleFormDialog(false)}
+        onClose={() => {
+          setToggleFormDialog(false)
+          formik.resetForm();
+        }}
         formik={formik}
       />
 

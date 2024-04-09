@@ -29,7 +29,7 @@ const Navbar = (props) => {
     <ElevationScroll {...props}>
       <AppBar position="sticky">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6">POST.DEV</Typography>
+          <Typography variant="h5">POST.DEV</Typography>
           <List>
             {MENU_ITEMS.map((item) => (
               <Link href={item.href} key={item.label}>

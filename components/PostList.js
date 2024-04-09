@@ -1,8 +1,8 @@
 import React from 'react'
-import { Paper, Typography } from '@mui/material'
+import { Box, Paper, Typography } from '@mui/material'
 import PostListItem from './PostListItem'
 
-const PostList = ({posts, setDeletePost, setEditPost, formik, setToggleDeleteDialog, setToggleFormDialog}) => {
+const PostList = ({ posts, setDeletePost, setEditPost, formik, setToggleDeleteDialog, setToggleFormDialog }) => {
 
   return (
     <Paper sx={{ width: '100%', height: '80vh', overflow: 'auto' }}>
@@ -22,9 +22,11 @@ const PostList = ({posts, setDeletePost, setEditPost, formik, setToggleDeleteDia
           }}
         />
       )) : (
-        <Typography sx={{ p: 2 }}>
-          <h2>No Posts</h2>
-        </Typography>
+        <Box sx={{ height: '100%', width: '100%', display: 'grid', placeItems: 'center' }}>
+          <Typography variant='h6'>
+            No Posts found
+          </Typography>
+        </Box>
       )}
     </Paper>
   )
