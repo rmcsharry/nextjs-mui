@@ -6,7 +6,7 @@ const PostList = ({posts}) => {
 
   return (
     <Paper sx={{ width: '100%', height: '80vh', overflow: 'auto' }}>
-      {posts.length > 0 ? posts.map(post => (
+      {posts?.length > 0 ? posts.map(post => (
         <PostListItem key={post.id} post={post} />
       )) : (
         <Typography sx={{ p: 2 }}>

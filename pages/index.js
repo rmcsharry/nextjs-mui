@@ -4,34 +4,15 @@ import PostList from '@/components/PostList'
 import FormDialog from '@/components/FormDialog'
 import { useFormik } from 'formik'
 import * as yup from 'yup';
+import getAllPosts from '@/services/getAllPosts'
 
 const validationSchema = yup.object({
   title: yup.string().required('Please enter value'),
   body: yup.string().required('Please enter value'),
 });
 
-const POSTS = [
-  {
-    id: 1,
-    title: 'Post 1',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, ante nec vehicula lacinia, erat nunc ultrices turpis, nec luctus elit eros nec turpis. Vivamus nec nisl nec purus scelerisque ultricies. Nulla facilisi. Sed in eros nec sapien luctus suscipit. Donec nec sapien nec justo iaculis lacinia',
-    createdAt: '2024-01-12'
-  },
-  {
-    id: 2,
-    title: 'Post 1',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, ante nec vehicula lacinia, erat nunc ultrices turpis, nec luctus elit eros nec turpis. Vivamus nec nisl nec purus scelerisque ultricies. Nulla facilisi. Sed in eros nec sapien luctus suscipit. Donec nec sapien nec justo iaculis lacinia',
-    createdAt: '2024-02-12'
-  },
-  {
-    id: 3,
-    title: 'Post 1',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, ante nec vehicula lacinia, erat nunc ultrices turpis, nec luctus elit eros nec turpis. Vivamus nec nisl nec purus scelerisque ultricies. Nulla facilisi. Sed in eros nec sapien luctus suscipit. Donec nec sapien nec justo iaculis lacinia',
-    createdAt: '2024-01-15'
-  },  
-]
 
-const HomePage = () => {
+const HomePage = ({posts}) => {
   const [toggleFormDialog, setToggleFormDialog] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -52,10 +33,15 @@ const HomePage = () => {
       <Container maxWidth="md" sx={{ py: 2}}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={3}>
-            <Button variant="contained" fullWidth onClick={() => setToggleFormDialog(true)}>Add Post</Button>
+            <Button
+              variant="contained" fullWidth
+              onClick={() => setToggleFormDialog(true)}
+            >
+              Add Post
+            </Button>
           </Grid>
           <Grid item xs={12} md={9}>
-            <PostList posts={POSTS} />
+            <PostList posts={posts} />
           </Grid>
         </Grid>
       </Container>
@@ -70,3 +56,13 @@ const HomePage = () => {
 }
 
 export default HomePage
+
+export async function getServerSideProps() {
+  const posts = await getAllPosts();
+
+  return {
+      props: {
+          posts
+      },
+  };
+}
